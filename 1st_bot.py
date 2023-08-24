@@ -1,45 +1,43 @@
 import discord
+from discord.ext import commands
 from Bot_logic import gen_pass
-import random, asyncio
+import random , os
 
-# Variabel intents menyimpan hak istimewa bot
 intents = discord.Intents.default()
-# Mengaktifkan hak istimewa message-reading
 intents.message_content = True
-# Membuat bot di variabel klien dan mentransfernya hak istimewa
-client = discord.Client(intents=intents)
 
-@client.event
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+@bot.event
 async def on_ready():
-    print(f'Kita telah masuk sebagai {client.user}')
+    print(f'We have logged in as {bot.user}')
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    if message.content.startswith('$halo'):
-        await message.channel.send("Hi!")
-    elif message.content.startswith('$bye'):
-        await message.channel.send("\\U0001f642")
-    elif message.content.startswith('$pass'):
-        await message.channel.send(gen_pass(8))
-    elif message.content.startswith('$guess'):
-        await message.channel.send('Guess a number between 1 and 10.')
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f'Hi! I am a bot {bot.user}!')
 
-        def is_correct(m):
-            return m.author == message.author and m.content.isdigit()
+@bot.command()
+async def heh(ctx, count_heh = 5):
+    await ctx.send("he" * count_heh)
 
-        answer = random.randint(1, 10)
+@bot.command()
+async def password(ctx):
+    await ctx.send(gen_pass(8))
 
-        try:
-            guess = await client.wait_for('message', check=is_correct, timeout=5.0)
-        except asyncio.TimeoutError:
-            return await message.channel.send(f'Sorry, you took too long it was {answer}.')
+@bot.command()
+async def silly(ctx):
+    img_name = random.choice(os.listdir('images'))
+    with open(f'images/{img_name}', 'rb') as f:
+        picture = discord.File(f)
+        f.close()
+    await ctx.send(file=picture)
 
-        if int(guess.content) == answer:
-            await message.channel.send('You are right!')
-        else:
-            await message.channel.send(f'Oops. It is actually {answer}.')
+@bot.command()
+async def kitty(ctx):
+    img_name = random.choice(os.listdir('Cats'))
+    with open(f'Cats/{img_name}', 'rb') as f:
+        picture = discord.File(f)
+        f.close()
+    await ctx.send(file=picture)
 
-
-client.run("")
+bot.run("")
