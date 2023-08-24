@@ -22,4 +22,4 @@ async def anorganik(ctx):
     await ctx.send('salah satu contoh sampah anorganik adalah :')
     await ctx.send(sampah_anorganik())
 
-bot.run("MTEzNDEwNTgwMDAwOTMyMjU5Ng.GSBsDQ.JbbijGNqxWZltUHPxU_J8Ud_OeKTKcoI-8g9Ho")
+bot.run("")
